@@ -11,7 +11,8 @@ def main():
     img1, img2 = None, None
 
     # BEGIN YOUR CODE HERE
-
+    img1 = misc.imread('/home/cp612sh/CS231A/ps0_code/image1.jpg')
+    img2 = misc.imread('/home/cp612sh/CS231A/ps0_code/image2.jpg')
     # END YOUR CODE HERE
 
     # ===== Problem 3b =====
@@ -19,7 +20,10 @@ def main():
     # to stretch from minimum value 0 to maximum value 1.
 
     # BEGIN YOUR CODE HERE
-
+    img1.astype(float)
+    img2.astype(float)
+    img1nom = img1 / np.max(img1)
+    img2nom = img2 / np.max(img2)
     # END YOUR CODE HERE
 
     # ===== Problem 3c =====
@@ -28,7 +32,10 @@ def main():
     # Display this image.
 
     # BEGIN YOUR CODE HERE
-
+    imgAdd = img1 + img2
+    imgAddNorm = imgAdd / np.max(imgAdd)
+    plt.figure(1)
+    plt.imshow(imgAddNorm)
     # END YOUR CODE HERE
 
     # ===== Problem 3d =====
@@ -39,7 +46,11 @@ def main():
     newImage1 = None
 
     # BEGIN YOUR CODE HERE
-
+    imgSize = img1.shape
+    mid = imgSize[1] // 2
+    newImage1 = np.concatenate((img1[:, :mid, :], img2[:, mid:, :]), axis=1)
+    plt.figure(2)
+    plt.imshow(newImage1)
     # END YOUR CODE HERE
 
     # ===== Problem 3e =====
@@ -51,7 +62,14 @@ def main():
     newImage2 = None
 
     # BEGIN YOUR CODE HERE
-
+    newImage2 = np.zeros(imgSize, dtype=np.int64)
+    for i in range(imgSize[0]):
+        if i % 2 == 0:
+            newImage2[i, :, :] = img1[i, :, :]
+        else:
+            newImage2[i, :, :] = img2[i, :, :]
+    plt.figure(3)
+    plt.imshow(newImage2)
     # END YOUR CODE HERE
 
     # ===== Problem 3f =====
@@ -61,7 +79,12 @@ def main():
     newImage3 = None
 
     # BEGIN YOUR CODE HERE
-
+    img1_reshaped = img1.reshape(imgSize[0]//2, imgSize[1]*2, -1)
+    img2_reshaped = img2.reshape(imgSize[0]//2, imgSize[1]*2, -1)
+    newImage3 = np.concatenate((img1_reshaped[:, :imgSize[1], :], img2_reshaped[:, imgSize[1]:, :]), axis=1)
+    newImage3 = newImage3.reshape(imgSize)
+    plt.figure(4)
+    plt.imshow(newImage3)
     # END YOUR CODE HERE
 
     # ===== Problem 3g =====
@@ -69,9 +92,14 @@ def main():
     # Display the grayscale image with a title.
 
     # BEGIN YOUR CODE HERE
-
+    gray = np.dot(newImage3[..., :3], [0.299, 0.587, 0.114])
+    fig3 = plt.figure(num=5)
+    fig3.suptitle('gray image', fontsize=20)
+    
+    plt.imshow(gray, cmap=plt.get_cmap('gray'))
+    plt.show()
     # END YOUR CODE HERE
-
+    plt.close()
 
 if __name__ == '__main__':
     main()
