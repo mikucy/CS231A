@@ -11,10 +11,10 @@ def main():
     M, a, b, c = None, None, None, None
 
     # BEGIN YOUR CODE HERE
-    M = np.arange(9).reshape(3, 3)
-    a = np.array([1, 2, 3])
-    b = np.array([2, 3, 4])
-    c = np.array([3, 4, 5])
+    M = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [0, 2, 2]])
+    a = np.array([1, 1, 0])
+    b = np.array([-1, 2, 5])
+    c = np.array([0, 2, 3, 2])
     # END YOUR CODE HERE
 
     # ===== Problem 2b =====
@@ -46,9 +46,9 @@ def main():
     # Hint: The function repmat() may come in handy.
 
     newM = None
-
+    
     # BEGIN YOUR CODE HERE
-    newa = np.matlib.repmat(a, 3, 1)
+    newa = np.matlib.repmat(a, 4, 1)
     newM = newa * M
     print('multiply each row of M element-wise by a: \n', newM)
     # END YOUR CODE HERE
@@ -62,7 +62,7 @@ def main():
     sortedM = np.sort(newM, axis=None)
     print('sorted M: \n', sortedM)
 
-    x = np.linspace(1, 9, 9)
+    x = np.linspace(1, 12, 12)
     plt.scatter(x, sortedM)
     plt.show()
     # END YOUR CODE HERE

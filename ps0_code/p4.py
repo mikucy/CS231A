@@ -12,7 +12,7 @@ def main():
     img1 = None
 
     # BEGIN YOUR CODE HERE
-    img1 = misc.imread('/home/cp612sh/CS231A/ps0_code/image1.jpg', mode='F')
+    img1 = misc.imread('/home/cy/CS231A/ps0_code/image1.jpg', mode='F')
     print(img1.shape)
     plt.figure(1)
     plt.imshow(img1, cmap='gray')

@@ -11,8 +11,8 @@ def main():
     img1, img2 = None, None
 
     # BEGIN YOUR CODE HERE
-    img1 = misc.imread('/home/cp612sh/CS231A/ps0_code/image1.jpg')
-    img2 = misc.imread('/home/cp612sh/CS231A/ps0_code/image2.jpg')
+    img1 = misc.imread('/home/cy/CS231A/ps0_code/image1.jpg')
+    img2 = misc.imread('/home/cy/CS231A/ps0_code/image2.jpg')
     # END YOUR CODE HERE
 
     # ===== Problem 3b =====
