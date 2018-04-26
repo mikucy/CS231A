@@ -11,8 +11,8 @@ def main():
     img1, img2 = None, None
 
     # BEGIN YOUR CODE HERE
-    img1 = misc.imread('/home/cy/CS231A/ps0_code/image1.jpg')
-    img2 = misc.imread('/home/cy/CS231A/ps0_code/image2.jpg')
+    img1 = misc.imread('./ps0_code/image1.jpg')
+    img2 = misc.imread('./ps0_code/image2.jpg')
     # END YOUR CODE HERE
 
     # ===== Problem 3b =====
@@ -34,7 +34,7 @@ def main():
     # BEGIN YOUR CODE HERE
     imgAdd = img1 + img2
     imgAddNorm = imgAdd / np.max(imgAdd)
-    plt.figure(1)
+    plt.figure('Problem3_1')
     plt.imshow(imgAddNorm)
     # END YOUR CODE HERE
 
@@ -49,7 +49,7 @@ def main():
     imgSize = img1.shape
     mid = imgSize[1] // 2
     newImage1 = np.concatenate((img1[:, :mid, :], img2[:, mid:, :]), axis=1)
-    plt.figure(2)
+    plt.figure('Problem3_2')
     plt.imshow(newImage1)
     # END YOUR CODE HERE
 
@@ -68,7 +68,7 @@ def main():
             newImage2[i, :, :] = img1[i, :, :]
         else:
             newImage2[i, :, :] = img2[i, :, :]
-    plt.figure(3)
+    plt.figure('Problem3_3')
     plt.imshow(newImage2)
     # END YOUR CODE HERE
 
@@ -83,7 +83,7 @@ def main():
     img2_reshaped = img2.reshape(imgSize[0]//2, imgSize[1]*2, -1)
     newImage3 = np.concatenate((img1_reshaped[:, :imgSize[1], :], img2_reshaped[:, imgSize[1]:, :]), axis=1)
     newImage3 = newImage3.reshape(imgSize)
-    plt.figure(4)
+    plt.figure('Problem3_4')
     plt.imshow(newImage3)
     # END YOUR CODE HERE
 
@@ -93,7 +93,7 @@ def main():
 
     # BEGIN YOUR CODE HERE
     gray = np.dot(newImage3[..., :3], [0.299, 0.587, 0.114])
-    fig3 = plt.figure(num=5)
+    fig3 = plt.figure('Problem3_5')
     fig3.suptitle('gray image', fontsize=20)
     
     plt.imshow(gray, cmap=plt.get_cmap('gray'))

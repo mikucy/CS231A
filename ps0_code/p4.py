@@ -12,9 +12,9 @@ def main():
     img1 = None
 
     # BEGIN YOUR CODE HERE
-    img1 = misc.imread('/home/cy/CS231A/ps0_code/image1.jpg', mode='F')
+    img1 = misc.imread('./ps0_code/image1.jpg', mode='F')
     print(img1.shape)
-    plt.figure(1)
+    plt.figure('Problem4_1')
     plt.imshow(img1, cmap='gray')
     u, s, vh = np.linalg.svd(img1)
     # END YOUR CODE HERE
@@ -27,7 +27,7 @@ def main():
 
     # BEGIN YOUR CODE HERE
     rank1approx = np.dot((u[:, 0] * s[:1]).reshape(-1, 1), vh[0, :].reshape(1, -1))
-    plt.figure(2)
+    plt.figure('Problem4_2')
     plt.imshow(rank1approx, cmap='gray')
     # END YOUR CODE HERE
 
@@ -39,7 +39,7 @@ def main():
 
     # BEGIN YOUR CODE HERE
     rank20approx = np.dot(u[:, :20] * s[0: 20], vh[0: 20, :])
-    plt.figure(3)
+    plt.figure('Problem4_3')
     plt.imshow(rank20approx, cmap='gray')
     plt.show()
     plt.close()
