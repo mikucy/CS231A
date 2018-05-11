@@ -44,3 +44,24 @@ sorted M:
  [-1.40079365e-18  4.77048956e-18  1.40946282e-18  1.00000000e+00]]
 RMS Error:  1.4054885481541644
  ```
+ - Problem 3
+ ```
+ Intrinsic Matrix:
+ [[ 2.87873596e+03 -0.00000000e+00  8.58115141e+02]
+ [-0.00000000e+00  2.87873596e+03  1.08694938e+03]
+ [-0.00000000e+00 -0.00000000e+00  1.10969448e+00]]
+ 
+Actual Matrix:
+ [[2.448e+03 0.000e+00 1.253e+03]
+ [0.000e+00 2.438e+03 9.860e+02]
+ [0.000e+00 0.000e+00 1.000e+00]]
+Angle between floor and box: 90.027361241031
+Rotation between two cameras:
+ [[ 8.19551249e-01  1.35836471e-01 -3.69928448e-01]
+ [ 9.09898356e-02  1.16646489e+00  1.42060135e-01]
+ [-7.67565342e-16 -1.22124533e-15  1.01061171e+00]]
+Angle around z-axis (pointing out of camera): -9.410931 degrees
+Angle around y-axis (pointing vertically): -19.924588 degrees
+Angle around x-axis (pointing horizontally): -8.001552 degrees
+
+ ```
