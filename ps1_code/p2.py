@@ -28,7 +28,20 @@ Returns:
 '''
 def compute_camera_matrix(real_XY, front_image, back_image):
     # TODO: Fill in this code
-    pass
+    N = real_XY.shape[0]
+    Z1 = np.zeros((N, 1))
+    ones = np.ones((N, 1))
+    Z2 = 150 * np.ones((N, 1))
+    M_front_scene = np.c_[real_XY, Z1, ones]
+    M_back_scene = np.c_[real_XY, Z2, ones]
+    M_scene = np.r_[M_front_scene, M_back_scene]
+    M_front_image = np.c_[front_image, ones]
+    M_back_image = np.c_[back_image, ones]
+    M_image = np.r_[M_front_image, M_back_image]
+    # Solve for M_scene * camera_matrix.T = M_image
+    camera_matrix = np.linalg.lstsq(M_scene, M_image, rcond=None)
+    camera_matrix = camera_matrix[0].T
+    return camera_matrix
 
 '''
 RMS_ERROR
@@ -43,13 +56,25 @@ Returns:
 '''
 def rms_error(camera_matrix, real_XY, front_image, back_image):
     #TODO: Fill in this code
-    pass
+    N = real_XY.shape[0]
+    Z1 = np.zeros((N, 1))
+    ones = np.ones((N, 1))
+    Z2 = 150 * np.ones((N, 1))
+    M_front_scene = np.c_[real_XY, Z1, ones]
+    M_back_scene = np.c_[real_XY, Z2, ones]
+    M_scene = np.r_[M_front_scene, M_back_scene]
+    M_front_image = np.c_[front_image, ones]
+    M_back_image = np.c_[back_image, ones]
+    M_image = np.r_[M_front_image, M_back_image]
+    predicted = M_scene.dot(camera_matrix.T)
+    rms_error = np.sqrt(np.sum(np.square(predicted - M_image)) / N)
+    return rms_error
 
 if __name__ == '__main__':
     # Loading the example coordinates setup
-    real_XY = np.load('real_XY.npy')
-    front_image = np.load('front_image.npy')
-    back_image = np.load('back_image.npy')
+    real_XY = np.load('./ps1_code/real_XY.npy')
+    front_image = np.load('./ps1_code/front_image.npy')
+    back_image = np.load('./ps1_code/back_image.npy')
 
     camera_matrix = compute_camera_matrix(real_XY, front_image, back_image)
     print("Camera Matrix:\n", camera_matrix)
