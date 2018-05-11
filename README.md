@@ -65,5 +65,4 @@ Rotation between two cameras:
 Angle around z-axis (pointing out of camera): -9.410931 degrees
 Angle around y-axis (pointing vertically): -19.924588 degrees
 Angle around x-axis (pointing horizontally): -8.001552 degrees
-
  ```
