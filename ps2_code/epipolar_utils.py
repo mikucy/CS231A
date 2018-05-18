@@ -18,7 +18,7 @@ def get_data_from_txt_file(filename, use_subset = False):
     number_pts = int(lines[0])
 
     points = np.ones((number_pts, 3))
-    for i in xrange(number_pts):
+    for i in range(number_pts):
         split_arr = lines[i+1].split()
         if len(split_arr) == 2:
             y, x = split_arr
@@ -41,8 +41,8 @@ Returns:
 def compute_rectified_image(im, H):
     new_x = np.zeros(im.shape[:2])
     new_y = np.zeros(im.shape[:2])
-    for y in xrange(im.shape[0]): # height
-        for x in xrange(im.shape[1]): # width
+    for y in range(im.shape[0]): # height
+        for x in range(im.shape[1]): # width
             new_location = H.dot([x, y, 1])
             new_location /= new_location[2]
             new_x[y,x] = new_location[0]
@@ -55,8 +55,8 @@ def compute_rectified_image(im, H):
     H_inv = np.linalg.inv(H)
     new_image = np.zeros(new_dims)
 
-    for y in xrange(new_dims[0]):
-        for x in xrange(new_dims[1]):
+    for y in range(new_dims[0]):
+        for x in range(new_dims[1]):
             old_location = H_inv.dot([x+offsets[0], y+offsets[1], 1])
             old_location /= old_location[2]
             old_x = int(old_location[0])

@@ -51,9 +51,9 @@ def triangulate(frame):
     num_cameras, num_points = frame.match_idx.shape
     structure = np.zeros((num_points,3))
     all_camera_matrices = np.zeros((num_cameras, 3, 4))
-    for i in xrange(num_cameras):
+    for i in range(num_cameras):
         all_camera_matrices[i,:,:] = frame.K.dot(frame.motion[i,:,:])
-    for i in xrange(num_points):
+    for i in range(num_points):
         valid_cameras = np.where(frame.match_idx[:,i] >= 0)[0]
         camera_matrices = all_camera_matrices[valid_cameras,:,:]
         x = np.zeros((len(valid_cameras), 2))
@@ -93,7 +93,7 @@ def rotation_matrix_to_angle_axis(R):
 
     inv_one_minus_cos_theta = 1.0 / (1.0 - cos_theta)
 
-    for i in xrange(3):
+    for i in range(3):
         angle_axis[i] = theta * math.sqrt((R[i,i] - cos_theta) 
             * inv_one_minus_cos_theta)
         if((sin_theta < 0 and angle_axis[i] > 0) or
@@ -203,7 +203,7 @@ def reprojection_error_mot_str(match_idx, match_points, f, px, py, motion, struc
     N = match_idx.shape[0]
 
     errors = None
-    for i in xrange(N):
+    for i in range(N):
         valid_pts = match_idx[i,:] >= 0
         valid_idx = match_idx[i, valid_pts]
 
@@ -261,7 +261,7 @@ Returns:
 def bundle_adjustment(frame):
     num_cameras = frame.motion.shape[0]
     motion_angle_axis = np.zeros((num_cameras, 3, 2))
-    for i in xrange(num_cameras):
+    for i in range(num_cameras):
         motion_angle_axis[i, :, 0] = rotation_matrix_to_angle_axis(
                 frame.motion[i,:, :-1])
         motion_angle_axis[i, :, 1] = frame.motion[i, :, -1]
@@ -280,7 +280,7 @@ def bundle_adjustment(frame):
     frame.structure = opt_val[cut:].reshape((-1,3))
     motion_angle_axis = opt_val[:cut].reshape((-1, 3, 2))
 
-    for i in xrange(num_cameras):
+    for i in range(num_cameras):
         frame.motion[i,:,:] = np.hstack((angle_axis_to_rotation_matrix(motion_angle_axis[i,:,0]), motion_angle_axis[i,:,1].reshape((3,1))))
 
 '''
@@ -380,7 +380,7 @@ def remove_outliers(frame, threshold = 10.0):
     threshold_in_degree = 2.0
     threshold_in_cos = math.cos(float(threshold_in_degree) / 180 * math.pi)
 
-    for i in xrange(frame.match_idx.shape[0]):
+    for i in range(frame.match_idx.shape[0]):
         X = frame.K.dot(transform_points(frame.structure, frame.motion[i,:,:]).T)
         xy = X[:2, :] / X[2, :]
         selector = np.where(frame.match_idx[i,:] >= 0)[0]
@@ -396,20 +396,20 @@ def remove_outliers(frame, threshold = 10.0):
     # check viewing angle
     num_frames = frame.motion.shape[0]
     positions = np.zeros((3, num_frames))
-    for i in xrange(num_frames):
+    for i in range(num_frames):
         Rt = frame.motion[i, : , :]
         positions[:, i] = -Rt[:3, :3].T.dot(Rt[:,-1])
     
     view_dirs = np.zeros((3, frame.structure.shape[0], num_frames))
-    for i in xrange(frame.match_idx.shape[0]-1):
+    for i in range(frame.match_idx.shape[0]-1):
         selector = np.where(frame.match_idx[i,:] >= 0)[0]
         camera_view_dirs = frame.structure[selector,:] - positions[:, i]
         dir_length = np.sqrt(np.sum(camera_view_dirs ** 2))
         camera_view_dirs = camera_view_dirs / dir_length
         view_dirs[:, selector, i] = camera_view_dirs.T
 
-    for c1 in xrange(num_frames):
-        for c2 in xrange(c1,num_frames):
+    for c1 in range(num_frames):
+        for c2 in range(c1,num_frames):
             if c1 == c2: continue
             selector1 = np.where(frame.match_idx[c1,:] >= 0)[0]
             selector2 = np.where(frame.match_idx[c2,:] >= 0)[0]
@@ -441,7 +441,7 @@ def merge_two_frames(frameA, frameB, length):
 
     frameB_to_A = multiply_transformations(inverse(frameA.motion[-1,:,:]), frameB.motion[0,:,:])
     frameB.structure = transform_points(frameB.structure, frameB_to_A)
-    for i in xrange(2):
+    for i in range(2):
         frameB.motion[i,:,:] = multiply_transformations(frameB.motion[i,:,:], inverse(frameB_to_A))
 
     # since camera is in merged reference frame, add it to motion matrix
@@ -461,7 +461,7 @@ def merge_two_frames(frameA, frameB, length):
     xy_common = xy_common.T
 
     merged_frame.match_idx = np.vstack((merged_frame.match_idx, neg_ones((1, merged_frame.match_idx.shape[1]))))
-    for i in xrange(xy_common.shape[1]):
+    for i in range(xy_common.shape[1]):
         idA = trA[iA[i]]
         idB = trB[iB[i]]
 
@@ -475,7 +475,7 @@ def merge_two_frames(frameA, frameB, length):
     xy_new, iB, iA = row_set_diff(xyB, xyA)
     xy_new = xy_new.T
 
-    for i in xrange(xy_new.shape[1]):
+    for i in range(xy_new.shape[1]):
         idB = trB[iB[i]]
 
         merged_frame.match_points = np.vstack((merged_frame.match_points,frameB.match_points[frameB.match_idx[0,idB],:]))
@@ -503,7 +503,7 @@ Returns:
 '''
 def merge_all_frames(frames):
     merged_frame = deepcopy(frames[0])
-    for i in xrange(1,len(frames)):
+    for i in range(1,len(frames)):
         merged_frame = merge_two_frames(merged_frame, frames[i], i+1)
         merged_frame.structure = triangulate(merged_frame)
         bundle_adjustment(merged_frame)
