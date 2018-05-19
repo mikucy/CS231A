@@ -38,13 +38,13 @@ def plot_surface(voxels, voxel_size = 0.1):
     # Create an empty voxel grid, then fill in the elements in voxels
     V = np.zeros(X.shape)
     N = voxels.shape[0]
-    for ii in xrange(N):
+    for ii in range(N):
             ix = ux == voxels[ii,0]
             iy = uy == voxels[ii,1]
             iz = uz == voxels[ii,2]
             V[iy, ix, iz] = 1
 
-    marching_cubes = measure.marching_cubes(V, 0, spacing=(voxel_size, voxel_size, voxel_size))
+    marching_cubes = measure.marching_cubes_lewiner(V, 0, spacing=(voxel_size, voxel_size, voxel_size))
     verts = marching_cubes[0]
     faces = marching_cubes[1]
     ax.plot_trisurf(verts[:, 0], verts[:,1], faces, verts[:, 2], lw=0, color='red')

@@ -41,15 +41,15 @@ def hog_picture(w, bs = 20):
     bim1[:,int(round(bs/2.0))-1:int(round(bs/2.0))+1] = 1.0
     bim = np.zeros((bs, bs, 9))
     bim[:,:,0] = bim1
-    for i in xrange(1,9):
+    for i in range(1,9):
         bim[:,:,i] = imrotate(bim1, -i * float(bs), 'nearest') / 255.0
 
     # make pictures of positive weights bs adding up weighted glyphs
     w[w < 0] = 0.0
     im = np.zeros((bs * w.shape[0], bs * w.shape[1]))
-    for i in xrange(w.shape[0]):
-        for j in xrange(w.shape[1]):
-            for k in xrange(9):
+    for i in range(w.shape[0]):
+        for j in range(w.shape[1]):
+            for k in range(9):
                 im[i * bs : (i+1) * bs, j * bs : (j+1) * bs] += bim[:,:,k] * w[i,j,k+18]
 
     scale = max(w.max(), -w.max()) + 1e-8

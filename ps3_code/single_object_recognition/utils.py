@@ -88,7 +88,7 @@ def plot_bbox(cx, cy, w, h, orient, im):
     N = len(cx)
     plt.figure()
     plt.imshow(im)
-    for k in xrange(N):
+    for k in range(N):
         x = cx[k] + np.hstack([-w[k]/2*math.cos(orient[k])-h[k]/2*math.sin(orient[k]),
             -w[k]/2*math.cos(orient[k])+h[k]/2*math.sin(orient[k]), 
             w[k]/2*math.cos(orient[k])+h[k]/2*math.sin(orient[k]),

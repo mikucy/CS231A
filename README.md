@@ -169,3 +169,63 @@ Estimated RT:
  [ 0.2040601  -0.02537241  0.97862951  0.03311219]]
 ```
 ![Problem4](https://github.com/mikucy/CS231A/raw/master/ps2_code/solutions/Problem4.png)
+## Problem Set 3
+ - Problem 1
+
+ | Problem1_1 | Problem1_2 | Problem1_3 |
+ :---------:|:----------:|:---------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem1_1.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem1_2.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem1_3.png) 
+ 
+  | Problem1_4 | Problem1_5 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem1_4.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem1_5.png)
+ - Problem 2
+
+  | Problem2_1 | Problem2_2 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_1.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_2.png)
+
+   | Problem2_3 | Problem2_4 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_3.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_4.png)
+
+  | Problem2_5 | Problem2_6 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_5.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_6.png)
+
+  | Problem2_7 | Problem2_8 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_7.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_8.png)
+
+  | Problem2_9 | Problem2_10 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_9.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_10.png)
+
+  | Problem2_11 | Problem2_12 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_11.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem2_12.png)
+ - Problem 3
+ ```
+ --------------------------------------------------------------------------------
+Part A: Image gradient
+--------------------------------------------------------------------------------
+Expected angle: 126.339396329
+Expected magnitude: 0.423547566786
+Checking gradient test case 1: True
+Expected angles: 
+ [[100.30484647  63.43494882 167.47119229]
+ [ 68.19859051   0.          45.        ]
+ [ 53.13010235  64.53665494 180.        ]]
+Expected magnitudes: 
+ [[11.18033989 11.18033989  9.21954446]
+ [ 5.38516481 11.          7.07106781]
+ [15.         11.62970335  2.        ]]
+Checking gradient test case 2: True
+--------------------------------------------------------------------------------
+Part B: Histogram generation
+--------------------------------------------------------------------------------
+Checking histogram test case 1: True
+Checking histogram test case 2: True
+Submit these results: [4.535 2.465 0.95  0.8   0.45  0.9   0.    0.    0.   ]
+ ```
+[!Problem3](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem3.png)

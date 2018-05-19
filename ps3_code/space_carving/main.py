@@ -42,8 +42,31 @@ the location of a voxel in 3D space.
 '''
 def form_initial_voxels(xlim, ylim, zlim, num_voxels):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
+    x_range = xlim[1] - xlim[0]
+    y_range = ylim[1] - ylim[0]
+    z_range = zlim[1] - zlim[0]
+    total_volume = x_range * y_range * z_range
+    cubic_volume = total_volume / num_voxels
+    voxel_size = np.cbrt(cubic_volume)
+    n_x, n_y, n_z = int(x_range / voxel_size), int(y_range / voxel_size), int(z_range / voxel_size)
+    voxels = np.ones((n_x * n_y * n_z, 3), dtype=np.float64) * np.array([[xlim[0], ylim[0], zlim[0]]])
+    x, y, z = np.arange(n_x), np.arange(n_y), np.arange(n_z)
+    # Intuition: voxels should be something like:
+    # [xmin, ymin, zmin]
+    # [xmin + voxel_size, ymin, zmin]
+    # ...
+    # [xmin + (n_x-1)*voxel_size, ymin, zmin]
+    # [xmin, ymin + voxel_size, zmin]
+    # ...
+    # So let voxels = ones * [xmin, ymin, zmin] + idx_matrix * voxel_size
+    # where idx_matrix can be formed by np.repeat() and np.tile()
+    # np.repeat([1, 2, 3], 2) => [1, 1, 2, 2, 3, 3]
+    # np.tile([1, 2, 3], 2) => [1, 2, 3, 1, 2, 3] 
+    x = np.tile(x, n_y * n_z).reshape(-1, 1)
+    y = np.tile(np.repeat(y, n_x), n_z).reshape(-1, 1)
+    z = np.repeat(z, n_x * n_y).reshape(-1, 1)
+    voxels += np.c_[x, y, z] * voxel_size
+    return voxels, voxel_size
 
 '''
 GET_VOXEL_BOUNDS: Gives a nice bounding box in which the object will be carved
@@ -93,7 +116,13 @@ def get_voxel_bounds(cameras, estimate_better_bounds = False, num_voxels = 4000)
 
     if estimate_better_bounds:
         # TODO: Implement this method!
-        raise Exception('Not Implemented Error')
+        voxels, voxel_size = form_initial_voxels(xlim, ylim, zlim, num_voxels)
+        for c in cameras:
+            voxels = carve(voxels, c)
+        low = np.min(voxels, axis=0) - voxel_size
+        high = np.max(voxels, axis=0) + voxel_size
+        xlim[0], ylim[0], zlim[0] = low[0], low[1], low[2]
+        xlim[1], ylim[1], zlim[1] = high[0], high[1], high[2]
     return xlim, ylim, zlim
     
 
@@ -113,7 +142,26 @@ Returns:
 '''
 def carve(voxels, camera):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    sil = camera.silhouette
+    P = camera.P
+    idx = np.nonzero(sil)
+    x_min, x_max = np.min(idx[1]), np.max(idx[1])
+    y_min, y_max = np.min(idx[0]), np.max(idx[0])
+    # map 3d point to 2d point
+    one = np.ones((voxels.shape[0], 1))
+    point_3d = np.c_[voxels, one]
+    point_2d = P.dot(point_3d.T).T
+    point_2d /= point_2d[:, 2:3]
+    point_2d = point_2d[:, :2]
+    point_2d = point_2d.astype(int)
+    mask = (point_2d[:, 0] >= x_min) & (point_2d[:, 0] <= x_max) & (point_2d[:, 1] >= y_min) & (point_2d[:, 1] <= y_max)
+    subidx = np.argwhere(mask == True).flatten()
+    subpoint = point_2d[subidx, :]
+    # validate if every subpoint is in the silhouette
+    subidx = subidx[sil[subpoint[:, 1], subpoint[:, 0]] == True]
+    return voxels[subidx, :]
+
+
 
 
 '''
@@ -134,9 +182,9 @@ def estimate_silhouette(im):
 
 
 if __name__ == '__main__':
-    estimate_better_bounds = False
+    estimate_better_bounds = True
     use_true_silhouette = True
-    frames = sio.loadmat('frames.mat')['frames'][0]
+    frames = sio.loadmat('./ps3_code/space_carving/frames.mat')['frames'][0]
     cameras = [Camera(x) for x in frames]
 
     # Generate the silhouettes based on a color heuristic
@@ -161,16 +209,15 @@ if __name__ == '__main__':
     xlim, ylim, zlim = get_voxel_bounds(cameras, estimate_better_bounds)
 
     # This part is simply to test forming the initial voxel grid
-    voxels, voxel_size = form_initial_voxels(xlim, ylim, zlim, 4000)
-    plot_surface(voxels)
+    # voxels, voxel_size = form_initial_voxels(xlim, ylim, zlim, 4000)
+    # plot_surface(voxels)
     voxels, voxel_size = form_initial_voxels(xlim, ylim, zlim, num_voxels)
 
     # Test the initial carving
     voxels = carve(voxels, cameras[0])
     if use_true_silhouette:
         plot_surface(voxels)
-
     # Result after all carvings
     for c in cameras:
-        voxels = carve(voxels, c)  
+        voxels = carve(voxels, c)
     plot_surface(voxels, voxel_size)

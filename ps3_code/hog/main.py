@@ -33,9 +33,17 @@ The magnitude is simply sqrt((P4-P6)^2 + (P2-P8)^2)
 '''
 def compute_gradient(im):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
-
+    H, W = im.shape
+    angles = np.zeros((H-2, W-2))
+    magnitudes = np.zeros((H-2, W-2))
+    for i in range(1, H-1):
+        for j in range(1, W-1):
+            angles[i-1, j-1] = np.arctan2((im[i-1, j] - im[i+1, j]), (im[i, j-1] - im[i, j+1]))
+            if angles[i-1, j-1] < 0:
+                angles[i-1, j-1] += np.pi
+            angles[i-1, j-1] = angles[i-1, j-1] * 180 / np.pi
+            magnitudes[i-1, j-1] = np.sqrt((im[i-1, j] - im[i+1, j]) ** 2 + (im[i, j-1] - im[i, j+1]) ** 2)
+    return angles, magnitudes
 '''
 GENERATE_HISTOGRAM Given matrices of angles and magnitudes of the image
 gradient, generate the histogram of angles
@@ -84,8 +92,20 @@ last bins respectively.OA
 '''
 def generate_histogram(angles, magnitudes, nbins = 9):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
+    M, N = angles.shape
+    histogram = np.zeros(nbins)
+    for i in range(M):
+        for j in range(N):
+            angle, magnitude = angles[i, j], magnitudes[i, j]
+            tmp = angle // (90 / nbins)
+            bin1 = int((tmp - 1) / 2)
+            bin2 = bin1 + 1
+            center_angle1 = (180 / nbins) * bin1 + 90 / nbins
+            center_angle2 = (180 / nbins) * bin2 + 90 / nbins
+            bin2 = bin2 % nbins
+            histogram[bin1] += magnitude * np.abs(angle - center_angle2) / (180 / nbins)
+            histogram[bin2] += magnitude * np.abs(angle - center_angle1) / (180 / nbins)
+    return histogram
 
 '''
 COMPUTE_HOG_FEATURES Computes the histogram of gradients features
@@ -132,21 +152,40 @@ train a classifier or use it as a feature vector.
 '''
 def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
+    angles, magnitudes = compute_gradient(im)
+    block_feature = np.zeros((cells_in_block, cells_in_block, nbins))
+    H, W = im.shape
+    H_blocks = 2 * H // (cells_in_block * pixels_in_cell) - 1
+    W_blocks = 2 * W // (cells_in_block * pixels_in_cell) - 1
+    features = []
+    for i in range(H_blocks):
+        for j in range(W_blocks):
+            for k in range(cells_in_block):
+                for l in range(cells_in_block):
+                    h_start = i * cells_in_block * pixels_in_cell // 2 + k * pixels_in_cell
+                    h_end = (i+1) * cells_in_block * pixels_in_cell // 2 + (k+1) * pixels_in_cell
+                    w_start = j * cells_in_block * pixels_in_cell // 2 + l * pixels_in_cell
+                    w_end = (j+1) * cells_in_block * pixels_in_cell // 2 + (l+1) * pixels_in_cell
+                    angle = angles[h_start: h_end, w_start: w_end]
+                    magnitude = magnitudes[h_start: h_end, w_start: w_end]
+                    histogram = generate_histogram(angle, magnitude, nbins) # (nbins, )
+                    block_feature[k, l, :] = histogram 
+            features.append(block_feature.flatten())
+    features = np.array(features).reshape(H_blocks, W_blocks, -1)
+    return features
 
 if __name__ == '__main__':
     # Part A: Checking the image gradient
-    print '-' * 80
-    print 'Part A: Image gradient'
-    print '-' * 80
-    im = sio.imread('simple.jpg', True)
+    print('-' * 80)
+    print('Part A: Image gradient')
+    print('-' * 80)
+    im = sio.imread('./ps3_code/hog/simple.jpg', True)
     grad_angle, grad_magnitude = compute_gradient(im)
-    print "Expected angle: 126.339396329"
-    print "Expected magnitude: 0.423547566786"
-    print "Checking gradient test case 1:", \
+    print("Expected angle: 126.339396329")
+    print("Expected magnitude: 0.423547566786")
+    print("Checking gradient test case 1:", \
         np.abs(grad_angle[0][0] - 126.339396329) < 1e-3 and \
-        np.abs(grad_magnitude[0][0] - 0.423547566786) < 1e-3
+        np.abs(grad_magnitude[0][0] - 0.423547566786) < 1e-3)
 
     im = np.array([[1, 2, 2, 4, 8],
                     [3, 0, 1, 5, 10],
@@ -160,37 +199,37 @@ if __name__ == '__main__':
     correct_magnitude = np.array([[ 11.18033989,  11.18033989,   9.21954446],
                                   [  5.38516481,  11.        ,   7.07106781],
                                   [ 15.        ,  11.62970335,   2.        ]])
-    print "Expected angles: \n", correct_angle
-    print "Expected magnitudes: \n", correct_magnitude
-    print "Checking gradient test case 2:", \
+    print("Expected angles: \n", correct_angle)
+    print("Expected magnitudes: \n", correct_magnitude)
+    print("Checking gradient test case 2:", \
         np.allclose(grad_angle, correct_angle) and \
-        np.allclose(grad_magnitude, correct_magnitude)
+        np.allclose(grad_magnitude, correct_magnitude))
 
     # Part B: Checking the histogram generation
-    print '-' * 80
-    print 'Part B: Histogram generation'
-    print '-' * 80
+    print('-' * 80)
+    print('Part B: Histogram generation')
+    print('-' * 80)
     angles = np.array([[10, 30, 50], [70, 90, 110], [130, 150, 170]])
     magnitudes = np.arange(1,10).reshape((3,3))
-    print "Checking histogram test case 1:", \
-        np.all(generate_histogram(angles, magnitudes, nbins = 9) == np.arange(1,10))
+    print("Checking histogram test case 1:", \
+        np.all(generate_histogram(angles, magnitudes, nbins = 9) == np.arange(1,10)))
 
     angles = np.array([[20, 40, 60], [80, 100, 120], [140, 160, 180]])
     magnitudes = np.arange(1,19,2).reshape((3,3))
     histogram = generate_histogram(angles, magnitudes, nbins = 9)
-    print "Checking histogram test case 2:", \
-        np.all(histogram  == np.array([9, 2, 4, 6, 8, 10, 12, 14, 16]))
+    print("Checking histogram test case 2:", \
+        np.all(histogram  == np.array([9, 2, 4, 6, 8, 10, 12, 14, 16])))
 
     angles = np.array([[13, 23, 14.3], [53, 108, 1], [77, 8, 32]])
     magnitudes = np.ones((3,3))
     histogram = generate_histogram(angles, magnitudes, nbins = 9)
-    print "Submit these results:", histogram
+    print("Submit these results:", histogram)
 
     # Part C: Computing and displaying the final HoG features
     # vary cell size to change the output feature vector. These parameters are common parameters
     pixels_in_cell = 8
     cells_in_block = 2
     nbins = 9
-    im = sio.imread('car.jpg', True)
+    im = sio.imread('./ps3_code/hog/car.jpg', True)
     car_hog_feat = compute_hog_features(im, pixels_in_cell, cells_in_block, nbins)
     show_hog(im, car_hog_feat, figsize = (18,6))
