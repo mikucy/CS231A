@@ -228,4 +228,4 @@ Checking histogram test case 1: True
 Checking histogram test case 2: True
 Submit these results: [4.535 2.465 0.95  0.8   0.45  0.9   0.    0.    0.   ]
  ```
-[!Problem3](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem3.png)
+![Problem3](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem3.png)
