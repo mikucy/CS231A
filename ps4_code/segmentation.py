@@ -31,9 +31,22 @@ The K-means algorithm can be done in the following steps:
 '''
 def kmeans_segmentation(im, features, num_clusters):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    N = features.shape[0]
+    H, W = im.shape
+    idx = np.random.choice(N, num_clusters, replace=False)
+    centers = features[idx]
+    pixel_clusters = np.zeros(N)
 
+    while True:
+        for i in range(N):
+            pixel_clusters[i] = np.argmin(np.sum((features[i] - centers)**2, axis=1))
+        tmp = centers.copy()
+        for j in range(num_clusters):
+            centers[j] = np.mean(features[pixel_clusters == j], axis=0)
+        if np.allclose(tmp, centers):
+            break
 
+    return pixel_clusters.reshape(H, W)
 '''
 MEANSHIFT_SEGMENTATION: Image segmentation using meanshift
 Arguments:
@@ -90,18 +103,18 @@ def draw_clusters_on_image(im, pixel_clusters):
     average_color = np.zeros((num_clusters, 3))
     cluster_count = np.zeros(num_clusters)
 
-    for i in xrange(im.shape[0]):
-        for j in xrange(im.shape[1]):
+    for i in range(im.shape[0]):
+        for j in range(im.shape[1]):
             c = pixel_clusters[i,j]
             cluster_count[c] += 1
             average_color[c, :] += im[i, j, :]
 
-    for c in xrange(num_clusters):
+    for c in range(num_clusters):
         average_color[c,:] /= float(cluster_count[c])
         
     out_im = np.zeros_like(im)
-    for i in xrange(im.shape[0]):
-        for j in xrange(im.shape[1]):
+    for i in range(im.shape[0]):
+        for j in range(im.shape[1]):
             c = pixel_clusters[i,j]
             out_im[i,j,:] = average_color[c,:]
 
@@ -116,12 +129,12 @@ if __name__ == '__main__':
 
 
     for filename in ['lake', 'rocks', 'plates']:
-        img = imread('data/%s.jpeg' % filename) 
+        img = imread('./ps4_code/data/%s.jpeg' % filename) 
 
         # Create the feature vector for the images
         features = np.zeros((img.shape[0] * img.shape[1], 5))
-        for row in xrange(img.shape[0]):
-            for col in xrange(img.shape[1]):
+        for row in range(img.shape[0]):
+            for col in range(img.shape[1]):
                 features[row*img.shape[1] + col, :] = np.array([row, col, 
                     img[row, col, 0], img[row, col, 1], img[row, col, 2]])
         features_normalized = features / features.max(axis = 0)

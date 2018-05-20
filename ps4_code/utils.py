@@ -170,8 +170,8 @@ def generate_histogram(angles, magnitudes, nbins = 9):
     bin_size = float(180 / nbins)
 
     # iterate over the pixels
-    for h in xrange(angles.shape[0]):
-        for w in xrange(angles.shape[1]):
+    for h in range(angles.shape[0]):
+        for w in range(angles.shape[1]):
             ang = angles[h,w]
             mag = magnitudes[h,w]
 
@@ -251,14 +251,16 @@ def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
     angles, magnitudes = compute_gradient(im)
 
     total_cells_in_block = cells_in_block * pixels_in_cell
-    stride = total_cells_in_block / 2
+    stride = int(total_cells_in_block / 2)
     features = np.zeros((int(math.floor(height / stride)) - 1, 
         int(math.floor(width / stride)) - 1, 
         nbins * cells_in_block * cells_in_block))
 
     # iterate over the blocks, 50% overlap
-    for w in xrange(0, width - total_cells_in_block, stride):
-        for h in xrange(0, height - total_cells_in_block, stride):
+    print(stride, width, total_cells_in_block)
+    for w in range(0, width - total_cells_in_block, stride):
+        for h in range(0, height - total_cells_in_block, stride):
+            print(w, h)
             block_features = np.zeros((cells_in_block, cells_in_block,  nbins))
             block_magnitude = magnitudes[h:h+total_cells_in_block, 
                 w:w+total_cells_in_block]
@@ -266,8 +268,8 @@ def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
                     w:w+total_cells_in_block]
             
             #  iterate over the cells
-            for i in xrange(cells_in_block):
-                for j in xrange(cells_in_block):
+            for i in range(cells_in_block):
+                for j in range(cells_in_block):
                     cell_magnitudes = block_magnitude[i * pixels_in_cell:(i+1)
                             * pixels_in_cell,
                             j*pixels_in_cell:(j+1)*pixels_in_cell]

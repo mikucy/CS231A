@@ -49,9 +49,23 @@ nonmaximal suppression, you will filter the nonmaximal bounding boxes out.
 '''
 def run_detector(im, clf, window_size, cell_size, block_size, nbins, thresh=1):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
-
-
+    H, W = im.shape
+    width, height = window_size[1], window_size[0]
+    step = cell_size * block_size // 2
+    bboxes = []
+    scores = []
+    for i in range(0, H - height + step, step):
+        for j in range(0, W - width + step, step):
+            patch = im[i: i + height, j : j + width]
+            features = compute_hog_features(patch, cell_size, block_size, nbins)
+            face_decision = clf.decision_function(features.reshape(1, -1))
+            if face_decision > thresh:
+                bbox = np.array([j, i, width, height])
+                bboxes.append(bbox)
+                scores.append(face_decision)
+    bboxes = np.array(bboxes)
+    scores = np.array(scores)
+    return bboxes, scores
 '''
 NON_MAX_SUPPRESSION Given a list of bounding boxes, returns a subset that
 uses high confidence detections to suppresses other overlapping
@@ -78,7 +92,16 @@ A significant overlap is if the center of one bbox is in the other bbox.
 '''
 def non_max_suppression(bboxes, confidences):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    dtype = [('xmin', float), ('ymin', float), ('width', float), ('height', float), ('confidences', float)]
+    tmp = np.array(np.c_[bboxes, confidences], dtype=dtype)
+    tmp = np.sort(tmp, order='confidences')
+    N = tmp.shape[0]
+    nms_bboxes = []
+    for i in range(N):
+        for b in nms_bboxes:
+            if not((tmp[i, 0] + tmp[i, 2] / 2 < b[0] + b[2]) and (tmp[i, 1] + tmp[i, 3] / 2) < b[1] + b[3]):
+                nms_bboxes.append(tmp[i, :4])
+    return np.array(nms_bboxes)
 
 
 if __name__ == '__main__':
@@ -88,15 +111,15 @@ if __name__ == '__main__':
     window_size = np.array([36, 36])
 
     # compute or load features for training
-    if not (os.path.exists('data/features_pos.npy') and os.path.exists('data/features_neg.npy')):
-        features_pos = get_positive_features('data/caltech_faces/Caltech_CropFaces', cell_size, window_size, block_size, nbins)
+    if not (os.path.exists('./ps4_code/data/features_pos.npy') and os.path.exists('./ps4_code/data/features_neg.npy')):
+        features_pos = get_positive_features('./ps4_code/data/caltech_faces/Caltech_CropFaces', cell_size, window_size, block_size, nbins)
         num_negative_examples = 10000
-        features_neg = get_random_negative_features('data/train_non_face_scenes', cell_size, window_size, block_size, nbins, num_negative_examples)
-        np.save('data/features_pos.npy', features_pos)
-        np.save('data/features_neg.npy', features_neg)
+        features_neg = get_random_negative_features('./ps4_code/data/train_non_face_scenes', cell_size, window_size, block_size, nbins, num_negative_examples)
+        np.save('./ps4_code/data/features_pos.npy', features_pos)
+        np.save('./ps4_code/data/features_neg.npy', features_neg)
     else:
-        features_pos = np.load('data/features_pos.npy')
-        features_neg = np.load('data/features_neg.npy')
+        features_pos = np.load('./ps4_code/data/features_pos.npy')
+        features_neg = np.load('./ps4_code/data/features_neg.npy')
 
     X = np.vstack((features_pos, features_neg))
     Y = np.hstack((np.ones(len(features_pos)), np.zeros(len(features_neg))))
@@ -107,7 +130,7 @@ if __name__ == '__main__':
     score = clf.score(X, Y)
 
     # Part A: Sliding window detector
-    im = imread('data/people.jpg').astype(np.uint8)
+    im = imread('./ps4_code/data/people.jpg').astype(np.uint8)
     bboxes, scores = run_detector(im, clf, window_size, cell_size, block_size, nbins)
     plot_img_with_bbox(im, bboxes, 'Without nonmaximal suppresion')
     plt.show()
