@@ -153,13 +153,13 @@ train a classifier or use it as a feature vector.
 def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
     # TODO: Implement this method!
     angles, magnitudes = compute_gradient(im)
-    block_feature = np.zeros((cells_in_block, cells_in_block, nbins))
     H, W = im.shape
     H_blocks = 2 * H // (cells_in_block * pixels_in_cell) - 1
     W_blocks = 2 * W // (cells_in_block * pixels_in_cell) - 1
     features = []
     for i in range(H_blocks):
         for j in range(W_blocks):
+            block_feature = np.zeros((cells_in_block, cells_in_block, nbins))
             for k in range(cells_in_block):
                 for l in range(cells_in_block):
                     h_start = i * cells_in_block * pixels_in_cell // 2 + k * pixels_in_cell
@@ -169,9 +169,13 @@ def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
                     angle = angles[h_start: h_end, w_start: w_end]
                     magnitude = magnitudes[h_start: h_end, w_start: w_end]
                     histogram = generate_histogram(angle, magnitude, nbins) # (nbins, )
-                    block_feature[k, l, :] = histogram 
-            features.append(block_feature.flatten())
+                    block_feature[k, l, :] = histogram
+            block_feature = block_feature.flatten()
+            block_feature /= np.linalg.norm(block_feature)
+            features.append(block_feature)
     features = np.array(features).reshape(H_blocks, W_blocks, -1)
+    features /= np.linalg.norm(block_feature)
+    
     return features
 
 if __name__ == '__main__':
