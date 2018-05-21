@@ -32,14 +32,15 @@ The K-means algorithm can be done in the following steps:
 def kmeans_segmentation(im, features, num_clusters):
     # TODO: Implement this method!
     N = features.shape[0]
-    H, W = im.shape
+    H, W, _ = im.shape
     idx = np.random.choice(N, num_clusters, replace=False)
     centers = features[idx]
     pixel_clusters = np.zeros(N)
 
     while True:
-        for i in range(N):
-            pixel_clusters[i] = np.argmin(np.sum((features[i] - centers)**2, axis=1))
+        f_tmp = np.tile(features, (num_clusters, 1))
+        c_tmp = np.repeat(centers, N, axis=0)
+        pixel_clusters = np.argmin(np.sum((f_tmp - c_tmp)**2, axis=1).reshape(num_clusters, N), axis=0)
         tmp = centers.copy()
         for j in range(num_clusters):
             centers[j] = np.mean(features[pixel_clusters == j], axis=0)
@@ -95,8 +96,42 @@ To perform mean shift:
 '''
 def meanshift_segmentation(im, features, bandwidth):
     # TODO: Implement this method!
-    raise Exception('Not Implemented Error')
+    H, W = im.shape[0], im.shape[1]
+    pixel_num, M = features.shape
+    mask = np.ones(pixel_num)
+    clusters = []
 
+    while np.sum(mask) > 0:
+        loc = np.argwhere(mask > 0)
+        idx = loc[int(np.random.choice(loc.shape[0], 1)[0])][0]
+        mask[idx] = 0
+
+        current_mean = features[idx]
+        prev_mean = current_mean
+
+        while True:
+            dist = np.linalg.norm(features - prev_mean, axis=1)
+            incircle = dist < bandwidth
+            mask[incircle] = 0
+            # update current_mean
+            current_mean = np.mean(features[incircle], axis=0)
+            if np.linalg.norm(current_mean - prev_mean) < 0.01 * bandwidth:
+                break
+            prev_mean = current_mean
+
+        isValid = True
+        for cluster in clusters:
+            if np.linalg.norm(cluster - current_mean) < 0.5 * bandwidth:
+                isValid = False
+        if isValid:
+            clusters.append(current_mean)
+
+    pixel_clusters = np.zeros((H, W))
+    clusters = np.array(clusters)
+    for i in range(pixel_num):
+        idx = np.argmin(np.linalg.norm(features[i, :] - clusters, axis=1))
+        pixel_clusters[i // W, i % W] = idx
+    return pixel_clusters.astype(int)
 
 def draw_clusters_on_image(im, pixel_clusters):
     num_clusters = int(pixel_clusters.max()) + 1

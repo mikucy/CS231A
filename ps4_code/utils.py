@@ -257,10 +257,8 @@ def compute_hog_features(im, pixels_in_cell, cells_in_block, nbins):
         nbins * cells_in_block * cells_in_block))
 
     # iterate over the blocks, 50% overlap
-    print(stride, width, total_cells_in_block)
     for w in range(0, width - total_cells_in_block, stride):
         for h in range(0, height - total_cells_in_block, stride):
-            print(w, h)
             block_features = np.zeros((cells_in_block, cells_in_block,  nbins))
             block_magnitude = magnitudes[h:h+total_cells_in_block, 
                 w:w+total_cells_in_block]

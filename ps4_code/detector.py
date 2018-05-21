@@ -92,15 +92,27 @@ A significant overlap is if the center of one bbox is in the other bbox.
 '''
 def non_max_suppression(bboxes, confidences):
     # TODO: Implement this method!
-    dtype = [('xmin', float), ('ymin', float), ('width', float), ('height', float), ('confidences', float)]
-    tmp = np.array(np.c_[bboxes, confidences], dtype=dtype)
-    tmp = np.sort(tmp, order='confidences')
-    N = tmp.shape[0]
+    indices = np.argsort(-confidences.reshape(1, -1)).flatten()
+    N = indices.shape[0]
     nms_bboxes = []
     for i in range(N):
-        for b in nms_bboxes:
-            if not((tmp[i, 0] + tmp[i, 2] / 2 < b[0] + b[2]) and (tmp[i, 1] + tmp[i, 3] / 2) < b[1] + b[3]):
-                nms_bboxes.append(tmp[i, :4])
+        bbox = bboxes[indices[i], :]
+        if i == 0:
+            nms_bboxes.append(bbox)
+        else:
+            isValid = True
+            xmin, ymin, w, h = bbox[0], bbox[1], bbox[2], bbox[3]
+            xc = (xmin + (xmin+w)) / 2.0
+            yc = (ymin + (ymin+h)) / 2.0
+            for j in range(len(nms_bboxes)):
+                _xmin, _ymin, _w, _h = nms_bboxes[j][0], nms_bboxes[j][1], nms_bboxes[j][2], nms_bboxes[j][3]
+                _xmax, _ymax = (_xmin + _w), (_ymin + _h)
+                if (_xmin <= xc <= _xmax) and (_ymin <= yc <= _ymax):
+                    isValid = False
+                    break
+
+            if isValid:
+                nms_bboxes.append(bbox)
     return np.array(nms_bboxes)
 
 

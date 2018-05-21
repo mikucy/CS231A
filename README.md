@@ -4,6 +4,7 @@ My own solutions for CS231A_1718fall problem sets
 The course is CS231A: Computer Vision, From 3D Reconstruction to Recognition
 <br>The repository contains my solutions for problem sets
 <br>All the material can be downloaded from [class syllabus on stanford](http://web.stanford.edu/class/cs231a/syllabus.html)
+<br>There are some detailed comments in the codes which I hope will help you understand the program
 <br>
 # Reference solutions
 Here are some solutions which are easy to check, in case someone needs them.
@@ -229,3 +230,22 @@ Checking histogram test case 2: True
 Submit these results: [4.535 2.465 0.95  0.8   0.45  0.9   0.    0.    0.   ]
  ```
 ![Problem3](https://github.com/mikucy/CS231A/raw/master/ps3_code/solutions/Problem3.png)
+## Problem Set 4
+ - Problem 1
+
+ | Problem1_1 | Problem1_2 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem1_1.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem1_2.png)
+ - Problem 2
+
+  | Problem2_1 | Problem2_2 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_1.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_2.png)
+
+   | Problem2_3 | Problem2_4 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_3.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_4.png)
+
+  | Problem2_5 | Problem2_6 |
+  :-------:|:-------:
+ ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_5.png) | ![](https://github.com/mikucy/CS231A/raw/master/ps4_code/solutions/Problem2_6.png)
